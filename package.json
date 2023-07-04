@@ -1,0 +1,13 @@
+{
+    "type": "module",
+    "license": "MIT",
+    "scripts": {
+        "start": "node jobscraper.js"
+    },
+    "dependencies": {
+        "chromedriver": "^114.0.2",
+        "dotenv": "^16.3.1",
+        "selenium-webdriver": "^4.10.0",
+        "sqlite-async": "^1.2.0"
+    }
+}
