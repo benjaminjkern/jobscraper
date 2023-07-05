@@ -1,9 +1,9 @@
 import { Database } from "sqlite-async";
 
-let db;
+export let db;
 
 const init = async () => {
-    db = await Database.open("./jobs.sqlite3");
+    if (!db) db = await Database.open("./jobs.sqlite3");
 
     if (
         !(
@@ -33,7 +33,7 @@ export const addNewJob = async (job) => {
 };
 
 export const readAllJobs = async () => {
-    console.log(await db.all("SELECT * FROM jobs"));
+    return await db.all("SELECT * FROM jobs");
 };
 
 export const initDatabase = async () => await init();

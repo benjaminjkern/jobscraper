@@ -62,18 +62,18 @@ const fetchJobs = async (
     }
 
     for (const jobElement of jobElements) {
+        let job;
         try {
-            addNewJob(await convertJobToObject(jobElement));
+            job = await convertJobToObject(jobElement);
         } catch (err) {
             console.warn("Get specific job failed");
+            continue;
         }
+
+        await addNewJob(job);
     }
 
-    try {
-        console.log(await totalNumJobs(), "jobs found");
-    } catch (err) {
-        console.warn("Error getting total num jobs");
-    }
+    console.log(await totalNumJobs(), "jobs found");
 };
 
 const convertJobToObject = async (webElement) => {
