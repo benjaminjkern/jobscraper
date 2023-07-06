@@ -13,7 +13,18 @@ const init = async () => {
         ).length
     )
         await db.run(
-            "CREATE TABLE jobs(jobId, jobTitle, companyName, location, extraInfo, details, PRIMARY KEY (jobId))"
+            "CREATE TABLE jobs(jobId, jobTitle, companyName, location, extraInfo, details, jobPostExtraInfo, PRIMARY KEY (jobId))"
+        );
+
+    if (
+        !(
+            await db.all(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='companies'"
+            )
+        ).length
+    )
+        await db.run(
+            "CREATE TABLE companies(companyName, opinion INTEGER, companyExtraInfo, PRIMARY KEY (companyName))"
         );
 };
 
@@ -21,15 +32,20 @@ export const totalNumJobs = async () =>
     (await db.get("SELECT COUNT(*) FROM jobs"))["COUNT(*)"];
 
 export const addNewJob = async (job) => {
-    // TODO: Filter
-    await db.run("INSERT OR IGNORE INTO jobs VALUES(?, ?, ?, ?, ?, ?)", [
+    // TODO: Filter before adding (?) Actually maybe it is better to just store everything and then filter afterwards
+    await db.run(`REPLACE INTO jobs VALUES(?, ?, ?, ?, ?, ?, ?)`, [
         job.jobId,
         job.jobTitle,
         job.companyName,
         job.location,
         job.extraInfo,
         job.details,
+        job.jobPostExtraInfo,
     ]);
+    await db.run(
+        `INSERT INTO companies(companyName, companyExtraInfo) VALUES (?, ?) ON CONFLICT(companyName) DO UPDATE SET companyExtraInfo=(?)`,
+        [job.companyName, job.companyExtraInfo, job.companyExtraInfo]
+    );
 };
 
 export const readAllJobs = async () => {

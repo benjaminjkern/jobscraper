@@ -22,6 +22,7 @@ export const run = async () => {
     while (!shouldCancel) {
         await fetchJobs(page);
         page++;
+        if (page >= 40) page = 0;
     }
     cancelled = true;
 };
@@ -30,7 +31,6 @@ const fetchJobs = async (
     page,
     queryParams = "keywords=software%20engineer&location=United%20States&f_WT=2&"
 ) => {
-    console.log(await totalNumJobs(), "jobs found");
     await driver.get(
         `https://www.linkedin.com/jobs/search/?${queryParams}start=${page * 25}`
     );
@@ -69,7 +69,6 @@ const fetchJobs = async (
             console.warn("Get specific job failed");
             continue;
         }
-
         await addNewJob(job);
     }
 
@@ -84,12 +83,18 @@ const convertJobToObject = async (webElement) => {
 
     const details = await driver.findElement(By.id("job-details")).getText();
 
+    const jobPostExtras = await driver.findElements(
+        By.css(".jobs-unified-top-card__job-insight")
+    );
+
     return {
         jobId: await webElement.getAttribute("data-job-id"),
         jobTitle: baseText[0],
         companyName: baseText[1],
         location: baseText[2],
         extraInfo: baseText.slice(3).join("\n"),
+        jobPostExtraInfo: await jobPostExtras[0].getText(),
         details,
+        companyExtraInfo: await jobPostExtras[1].getText(),
     };
 };
