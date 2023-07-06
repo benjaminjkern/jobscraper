@@ -26,7 +26,7 @@ const scramble = (list) => {
 };
 
 export const lookAtJobs = (inputJobs) => {
-    console.log("# Filtered Jobs report\nJobs selected: ", inputJobs.length);
+    let returnString = `# Filtered Jobs report\nJobs selected: ${inputJobs.length}\n`;
     const allJobs = [...inputJobs];
     scramble(allJobs);
     for (const {
@@ -39,12 +39,11 @@ export const lookAtJobs = (inputJobs) => {
         details,
         companyExtraInfo,
     } of allJobs) {
-        console.log(
-            `# ${jobTitle} @ ${companyName} (${location})\n<details>\n> https://linkedin.com/jobs/search/?currentJobId=${jobId}\n\n${
-                companyExtraInfo || ""
-            }\n\n${jobPostExtraInfo ? jobPostExtraInfo + " · " : ""}${extraInfo
-                .split("\n")
-                .join("\n\n")}\n\`\`\`\n${details}\n\`\`\`\n</details>\n`
-        );
+        returnString += `# ${jobTitle} @ ${companyName} (${location})\n<details>\n\n> https://linkedin.com/jobs/search/?currentJobId=${jobId}\n\n${
+            companyExtraInfo || ""
+        }\n\n${jobPostExtraInfo ? jobPostExtraInfo + " · " : ""}${extraInfo
+            .split("\n")
+            .join("\n\n")}\n\`\`\`\n${details}\n\`\`\`\n</details>\n\n`;
     }
+    return returnString;
 };

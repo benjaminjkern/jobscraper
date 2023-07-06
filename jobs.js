@@ -13,7 +13,7 @@ const init = async () => {
         ).length
     )
         await db.run(
-            "CREATE TABLE jobs(jobId, jobTitle, companyName, location, extraInfo, details, jobPostExtraInfo, applied, PRIMARY KEY (jobId))"
+            "CREATE TABLE jobs(jobId, jobTitle, companyName, location, extraInfo, details, jobPostExtraInfo, applied, yearsOfExperience, requiresClearance, salaryMin, salaryMax, PRIMARY KEY (jobId))"
         );
 
     if (
