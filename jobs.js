@@ -13,7 +13,7 @@ const init = async () => {
         ).length
     )
         await db.run(
-            "CREATE TABLE jobs(jobId, jobTitle, companyName, location, extraInfo, details, jobPostExtraInfo, PRIMARY KEY (jobId))"
+            "CREATE TABLE jobs(jobId, jobTitle, companyName, location, extraInfo, details, jobPostExtraInfo, applied, PRIMARY KEY (jobId))"
         );
 
     if (
@@ -33,15 +33,24 @@ export const totalNumJobs = async () =>
 
 export const addNewJob = async (job) => {
     // TODO: Filter before adding (?) Actually maybe it is better to just store everything and then filter afterwards
-    await db.run(`REPLACE INTO jobs VALUES(?, ?, ?, ?, ?, ?, ?)`, [
-        job.jobId,
-        job.jobTitle,
-        job.companyName,
-        job.location,
-        job.extraInfo,
-        job.details,
-        job.jobPostExtraInfo,
-    ]);
+    await db.run(
+        `REPLACE INTO jobs(jobId, jobTitle, companyName, location, extraInfo, details, jobPostExtraInfo) VALUES(?, ?, ?, ?, ?, ?, ?) ON CONFLICT(jobId) DO UPDATE SET jobTitle=(?),companyName=(?),location=(?),extraInfo=(?),details=(?),jobPostExtraInfo=(?)`,
+        [
+            job.jobId,
+            job.jobTitle,
+            job.companyName,
+            job.location,
+            job.extraInfo,
+            job.details,
+            job.jobPostExtraInfo,
+            job.jobTitle,
+            job.companyName,
+            job.location,
+            job.extraInfo,
+            job.details,
+            job.jobPostExtraInfo,
+        ]
+    );
     await db.run(
         `INSERT INTO companies(companyName, companyExtraInfo) VALUES (?, ?) ON CONFLICT(companyName) DO UPDATE SET companyExtraInfo=(?)`,
         [job.companyName, job.companyExtraInfo, job.companyExtraInfo]

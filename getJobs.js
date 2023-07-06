@@ -69,10 +69,19 @@ const fetchJobs = async (
             console.warn("Get specific job failed");
             continue;
         }
-        await addNewJob(job);
+
+        try {
+            await addNewJob(job);
+        } catch (err) {
+            console.warn("Add job to database failed");
+        }
     }
 
-    console.log(await totalNumJobs(), "jobs found");
+    try {
+        console.log(await totalNumJobs(), "jobs found");
+    } catch (err) {
+        console.warn("Fetch all jobs failed");
+    }
 };
 
 const convertJobToObject = async (webElement) => {
