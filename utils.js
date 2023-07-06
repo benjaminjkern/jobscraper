@@ -1,3 +1,5 @@
+import { db, totalNumJobs } from "./jobs.js";
+
 export const ratioColumnFilter = async (column, textToInclude) => {
     process.stdout.write(`${textToInclude}: `);
     return await ratioFilter(`${column} LIKE '%${textToInclude}%'`);
@@ -38,11 +40,11 @@ export const lookAtJobs = (inputJobs) => {
         companyExtraInfo,
     } of allJobs) {
         console.log(
-            `# ${jobTitle} @ ${companyName} (${location})\n> https://linkedin.com/jobs/search/?currentJobId=${jobId}\n\n${
+            `# ${jobTitle} @ ${companyName} (${location})\n<details>\n> https://linkedin.com/jobs/search/?currentJobId=${jobId}\n\n${
                 companyExtraInfo || ""
             }\n\n${jobPostExtraInfo ? jobPostExtraInfo + " · " : ""}${extraInfo
                 .split("\n")
-                .join("\n\n")}\n\`\`\`\n${details}\n\`\`\`\n`
+                .join("\n\n")}\n\`\`\`\n${details}\n\`\`\`\n</details>\n`
         );
     }
 };
